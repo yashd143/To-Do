@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Comic Sans MS, cursive;
+    }
+
+    .container {
+      height: 60px; /* Adjust the height as needed */
+      background-color: #333;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .container h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .hamburger {
+      line-height: 60px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 24px;
+    }
+
+    @media only screen and (min-width: 769px) {
+      .hamburger {
+        display: none;
+      }
+    }
+  </style>
+  <script>
+    function toggleMenu() {
+      var menu = document.getElementById("navbarMenu");
+      menu.classList.toggle("show");
+    }
+  </script>
+</head>
+<body style="background-color: #d0d3d5;">
+  <div class="container">
+    <h1>To Do List</h1>
+    <div class="hamburger" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </div>
+  </div>
+
+  <ul id="navbarMenu">
+    <li><a href="to_do.html" target="_blank">Create Task</a></li>
+  </ul>
+
+  <script src="to_do_script.js"></script>
+</body>
+</html>
