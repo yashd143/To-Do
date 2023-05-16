@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo List</title>
+  <style>
+    /* CSS styles for the task tables */
+    .task-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    body {
+      background-image: url("https://e1.pxfuel.com/desktop-wallpaper/873/63/desktop-wallpaper-chalkboard-backgrounds-chalk-board.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .task-table th,
+    .task-table td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .task-table th {
+      background-color: #;
+    }
+
+    .completed-task {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .undo-button {
+      background-color: #ddd;
+      border: none;
+      padding: 6px 12px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .undo-button:hover {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Todo List</h1>
+
+  <div class="todo-container">
+    <input type="text" class="todo-input" placeholder="Enter a task">
+    <button class="todo-button">Add Task</button>
+    <h2>Active Tasks</h2>
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Task</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="active-tasks">
+      </tbody>
+    </table>
+    <h2>Completed Tasks</h2>
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Task</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="completed-tasks">
+      </tbody>
+    </table>
+  </div>
+
+  <script src="to_do_script.js"></script>
+</body>
+</html>
