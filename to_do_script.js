@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
   const todoInput = document.querySelector(".todo-input");
   const todoButton = document.querySelector(".todo-button");
-  const activeTasksContainer = document.querySelector(".active-tasks");
-  const completedTasksContainer = document.querySelector(".completed-tasks");
+  const activeTasksList = document.querySelector(".active-tasks");
+  const completedTasksList = document.querySelector(".completed-tasks");
 
-  let taskId = 1; // Counter for task IDs
+  let tasks = [];
 
   todoButton.addEventListener("click", addTask);
   todoInput.addEventListener("keydown", function(event) {
@@ -14,87 +14,122 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  activeTasksContainer.addEventListener("click", function(event) {
+  activeTasksList.addEventListener("click", function(event) {
     const target = event.target;
 
     if (target.classList.contains("complete-checkbox")) {
-      const taskItem = target.closest("tr");
-      taskItem.classList.toggle("completed");
-      updateTaskStatus(taskItem);
+      const todoItem = target.closest("tr");
+      const taskId = Number(todoItem.getAttribute("data-task-id"));
+      const completed = target.checked;
+
+      updateTaskStatus(taskId, completed);
+      renderTasks();
+    } else if (target.classList.contains("delete-button")) {
+      const todoItem = target.closest("tr");
+      const taskId = Number(todoItem.getAttribute("data-task-id"));
+
+      deleteTask(taskId);
+      renderTasks();
     }
   });
 
-  completedTasksContainer.addEventListener("click", function(event) {
+  completedTasksList.addEventListener("click", function(event) {
     const target = event.target;
 
     if (target.classList.contains("undo-button")) {
-      const completedItem = target.closest("tr");
-      completedItem.classList.remove("completed");
-      updateTaskStatus(completedItem);
+      const todoItem = target.closest("tr");
+      const taskId = Number(todoItem.getAttribute("data-task-id"));
+      const completed = false;
+
+      updateTaskStatus(taskId, completed);
+      renderTasks();
+    } else if (target.classList.contains("delete-button")) {
+      const todoItem = target.closest("tr");
+      const taskId = Number(todoItem.getAttribute("data-task-id"));
+
+      deleteTask(taskId);
+      renderTasks();
     }
   });
 
   function addTask() {
-    const task = todoInput.value.trim();
-    if (task === "") {
+    const taskName = todoInput.value.trim();
+    if (taskName === "") {
       return;
     }
 
-    const capitalizedTask = capitalizeFirstLetter(task);
+    const newTask = {
+      id: tasks.length + 1,
+      name: taskName,
+      completed: false
+    };
 
-    const taskItem = createTaskItem(taskId, capitalizedTask);
-    activeTasksContainer.appendChild(taskItem);
+    tasks.push(newTask);
+    renderTasks();
 
     todoInput.value = "";
-    taskId++;
   }
 
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  function deleteTask(taskId) {
+    tasks = tasks.filter(function(task) {
+      return task.id !== taskId;
+    });
   }
 
-  function createTaskItem(id, task) {
-    const taskItem = document.createElement("tr");
-    taskItem.setAttribute("data-id", id);
+  function updateTaskStatus(taskId, completed) {
+    const taskIndex = tasks.findIndex(function(task) {
+      return task.id === taskId;
+    });
 
-    const taskIdCell = document.createElement("td");
-    taskIdCell.innerText = id;
-    taskItem.appendChild(taskIdCell);
-
-    const taskTextCell = document.createElement("td");
-    taskTextCell.innerText = task;
-    taskItem.appendChild(taskTextCell);
-
-    const actionsCell = document.createElement("td");
-    const completeCheckbox = document.createElement("input");
-    completeCheckbox.type = "checkbox";
-    completeCheckbox.classList.add("complete-checkbox");
-    actionsCell.appendChild(completeCheckbox);
-    taskItem.appendChild(actionsCell);
-
-    return taskItem;
-  }
-
-  function updateTaskStatus(taskItem) {
-    const taskId = taskItem.getAttribute("data-id");
-    const completeCheckbox = taskItem.querySelector(".complete-checkbox");
-
-    if (taskItem.classList.contains("completed")) {
-      completeCheckbox.style.display = "none";
-      const undoButton = createUndoButton();
-      taskItem.querySelector("td:last-child").appendChild(undoButton);
-      completedTasksContainer.appendChild(taskItem);
-    } else {
-      completeCheckbox.style.display = "initial";
-      taskItem.querySelector(".undo-button").remove();
-      activeTasksContainer.appendChild(taskItem);
+    if (taskIndex !== -1) {
+      tasks[taskIndex].completed = completed;
     }
   }
 
-  function createUndoButton() {
-    const undoButton = document.createElement("button");
-    undoButton.innerText = "Undo";
-    undoButton.classList.add("undo-button");
-    return undoButton;
+  function renderTasks() {
+    activeTasksList.innerHTML = "";
+    completedTasksList.innerHTML = "";
+
+    tasks.forEach(function(task) {
+      const taskItem = document.createElement("tr");
+      taskItem.setAttribute("data-task-id", task.id);
+
+      const taskIdCell = document.createElement("td");
+      taskIdCell.innerText = task.id;
+
+      const taskNameCell = document.createElement("td");
+      taskNameCell.innerText = task.name;
+
+      const taskActionsCell = document.createElement("td");
+      const completeCheckbox = document.createElement("input");
+      completeCheckbox.type = "checkbox";
+      completeCheckbox.checked = task.completed;
+      completeCheckbox.classList.add("complete-checkbox");
+
+      const deleteButton = document.createElement("button");
+      deleteButton.innerText = "Delete";
+      deleteButton.classList.add("delete-button");
+
+      taskActionsCell.appendChild(completeCheckbox);
+
+      if (task.completed) {
+        const undoButton = document.createElement("button");
+        undoButton.innerText = "Undo";
+        undoButton.classList.add("undo-button");
+        taskActionsCell.appendChild(undoButton);
+      } else {
+        taskActionsCell.appendChild(deleteButton);
+      }
+
+      taskItem.appendChild(taskIdCell);
+      taskItem.appendChild(taskNameCell);
+      taskItem.appendChild(taskActionsCell);
+
+      if (task.completed) {
+        completedTasksList.appendChild(taskItem);
+      } else {
+        activeTasksList.appendChild(taskItem);
+      }
+    });
   }
 });
